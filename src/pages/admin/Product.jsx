@@ -10,16 +10,16 @@ const Product = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const { products, loading, actionLoading, addProduct, editProduct, removeProduct } =
-    useProduct();
+  const {
+    products,
+    loading,
+    actionLoading,
+    addProduct,
+    editProduct,
+    removeProduct,
+  } = useProduct();
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
-
-  const [formData, setFormData] = useState({
+  const initialData = {
     id: null,
     title: "",
     description: "",
@@ -28,7 +28,13 @@ const Product = () => {
     category: "",
     img: "",
     price: "",
-  });
+  };
+  const [formData, setFormData] = useState(initialData);
+
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -44,25 +50,9 @@ const Product = () => {
     }
   }, [navigate]);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   const handleAdd = () => {
     setIsEdit(false);
-    setFormData({
-      id: null,
-      title: "",
-      description: "",
-      teacher: "",
-      job: "",
-      category: "",
-      img: "",
-      price: "",
-    });
+    setFormData(initialData);
     setIsPopupOpen(true);
   };
 
@@ -72,36 +62,20 @@ const Product = () => {
     setIsPopupOpen(true);
   };
 
-  const handleSave = async () => {
-    if (
-      !formData.title.trim() ||
-      !formData.teacher.trim() ||
-      !formData.category.trim() ||
-      !formData.price.trim() ||
-      !formData.job.trim() ||
-      !formData.description
-    ) {
-      alert("Mohon lengkapi semua field yang diperlukan.");
-      return;
-    }
-
-    if (Number(formData.price) <= 0) {
-      alert("Harga harus lebih besar dari 0.");
-      return;
-    }
-
+  const handleSubmit = async (data, isEdit) => {
     try {
       if (isEdit) {
-        await editProduct(formData.id, formData);
-        alert("Berhasil disimpan!");
+        await editProduct(data.id, data);
+        alert("Berhasil Update Produk!");
       } else {
         await addProduct({
-          ...formData,
-          price: Number(formData.price),
+          ...data,
+          price: Number(data.price),
         });
-        alert("Berhasil disimpan!");
+        alert("Berhasil Menambah Produk!");
       }
       setIsPopupOpen(false);
+      setFormData(initialData);
     } catch (error) {
       console.error(error);
     }
@@ -239,11 +213,10 @@ const Product = () => {
       <PopupEdit
         isOpen={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}
-        onSave={handleSave}
         formData={formData}
-        handleChange={handleChange}
         isEdit={isEdit}
         loading={actionLoading}
+        onSubmit={handleSubmit}
       />
     </>
   );

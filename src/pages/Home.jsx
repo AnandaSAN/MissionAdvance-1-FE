@@ -1,32 +1,16 @@
 import MainLayout from "../components/layout/MainLayout";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useProduct } from "../services/hooks/useProduct";
 import Card from "../components/molecules/Card";
 
 import Hero from "../assets/images/HeroBG.jpg";
 import NewsLetter from "../assets/images/NewsLetter.jpg";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 const Home = () => {
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [visibleCard, setVisibleCard] = useState(6);
-  const [content, setContent] = useState([]); 
+  const { products, loading } = useProduct();
 
-  useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/products`);
-        setContent(response.data);
-      } catch (error) {
-        console.error("Error fetching content:", error);
-      }
-    }
-    
-    fetchContent();
-  }, []);
-  
-  console.log(content);
   useEffect(() => {
     setVisibleCard(6);
   }, [activeCategory]);
@@ -41,8 +25,8 @@ const Home = () => {
 
   const filteredContent =
     activeCategory === "Semua"
-      ? content
-      : content.filter((item) => item.category === activeCategory);
+      ? products
+      : products.filter((item) => item.category === activeCategory);
 
   const visibleContent = filteredContent.slice(0, visibleCard);
 
@@ -104,7 +88,14 @@ const Home = () => {
         </div>
 
         <div className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 md:space-y-2">
-          {visibleContent.length > 0 ? (
+          {loading ? (
+            <div className="flex align-center text-center w-full">
+              <p className="col-span-full text-center text-gray-500 inline-block">
+                Loading     
+              </p>
+              <div className="ml-2 inline-block w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : visibleContent.length > 0 ? (
             visibleContent.map((item) => <Card key={item.id} item={item} />)
           ) : (
             <p className="col-span-full text-center text-gray-500">

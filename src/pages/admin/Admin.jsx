@@ -1,37 +1,19 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { useProduct } from "../../services/hooks/useProduct";
 
 const Admin = () => {
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const [course, setCourse] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { products } = useProduct();
 
-  const fetchCourse = async () => {
-    try {
-      setLoading(true);
-
-      const response =await axios.get(`${API_URL}/products`);
-      setCourse(response.data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };;
-
-  console.log(course);
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
     if (!currentUser) {
       navigate("/login");
     }
-
-    fetchCourse();
   }, []);
 
   return (
@@ -73,7 +55,7 @@ const Admin = () => {
         <div className="flex flex-col">
           <p className="text-2xl font-semibold">Jumlah Product</p>
           <p className="text-gray-600">
-            Jumlah Product: <span className="font-bold">{loading ? "-" : course.length}</span>
+            Jumlah Product: <span className="font-bold">{loading ? "-" : products.length}</span>
           </p>
           <Link
             to="/admin/product"

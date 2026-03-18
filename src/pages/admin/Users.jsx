@@ -44,9 +44,11 @@ const Users = () => {
           <tbody className="divide-y divide-gray-200">
             {loading ? (
               <tr>
-                <td colSpan="4" className="text-center py-5 text-lg">
-                  {" "}
-                  loading ....
+                <td colSpan="4" className="text-center py-5">
+                  <div className="flex justify-center items-center gap-2">
+                    <span>Loading Users </span>
+                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
                 </td>
               </tr>
             ) : (

@@ -1,13 +1,52 @@
+import { useState, useEffect } from "react";
+
 const FormEditProduct = ({
   isOpen,
   onClose,
-  onSave,
   formData,
-  handleChange,
   isEdit,
   loading,
+  onSubmit,
 }) => {
   if (!isOpen) return null;
+
+  const [alerts, setAlerts] = useState({});
+  const [dataProduct, setDataProduct] = useState(formData);
+
+  useEffect(() => {
+    setDataProduct(formData);
+  }, [formData]);
+
+  const handleChange = (e) => {
+    setDataProduct({
+      ...dataProduct,
+      [e.target.name]: e.target.value,
+    });
+    setAlerts({ ...alerts, [e.target.name]: "" });
+  };
+
+  const handleSubmit = async () => {
+    let newAlerts = {};
+
+    if (!dataProduct.title?.trim()) newAlerts.title = "Mohon isi judul produk";
+    if (!dataProduct.category)
+      newAlerts.category = "Mohon pilih kategori produk";
+    if (!dataProduct.teacher) newAlerts.teacher = "Mohon isi nama mentor";
+    if (!dataProduct.job) newAlerts.job = "Mohon isi pekerjaan terlebih dahulu";
+    if (!dataProduct.price) newAlerts.price = "Mohon isi harga produk";
+    if (!dataProduct.description)
+      newAlerts.description = "Mohon isi deskripsi produk";
+
+    if(!dataProduct.price < 0) newAlerts.price = "Mohon isi harga produk di atas 0";
+
+    if (Object.keys(newAlerts).length > 0) {
+      setAlerts(newAlerts);
+      return;
+    }
+
+    await onSubmit(dataProduct, isEdit);
+    setAlerts({});
+  };
 
   return (
     <div
@@ -34,16 +73,19 @@ const FormEditProduct = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
             <label htmlFor="title">
-              Judul Courses<span className="text-red-500">*</span>
+              Judul Produk<span className="text-red-500">*</span>
             </label>
             <input
               id="title"
               name="title"
-              value={formData.title}
+              value={dataProduct.title}
               onChange={handleChange}
               placeholder="Nama Produk"
               className="w-full border border-gray-300 rounded-md shadow-sm p-2 px-3 mt-1"
             />
+            {alerts.title && (
+              <p className="text-red-500 text-sm ml-1">* {alerts.title}</p>
+            )}
           </div>
 
           <div>
@@ -53,7 +95,7 @@ const FormEditProduct = ({
             <select
               name="category"
               id="category"
-              value={formData.category}
+              value={dataProduct.category}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-md shadow-sm p-2 px-3 mt-1"
             >
@@ -63,6 +105,9 @@ const FormEditProduct = ({
               <option value="Design">Design</option>
               <option value="Pengembangan Diri">Pengembangan Diri</option>
             </select>
+            {alerts.category && (
+              <p className="text-red-500 text-sm ml-1">* {alerts.category}</p>
+            )}
           </div>
 
           <div>
@@ -72,11 +117,14 @@ const FormEditProduct = ({
             <input
               id="teacher"
               name="teacher"
-              value={formData.teacher}
+              value={dataProduct.teacher}
               onChange={handleChange}
               placeholder="Mentor"
               className="w-full border border-gray-300 rounded-md shadow-sm p-2 px-3 mt-1"
             />
+            {alerts.teacher && (
+              <p className="text-red-500 text-sm ml-1">* {alerts.teacher}</p>
+            )}
           </div>
 
           <div>
@@ -85,11 +133,14 @@ const FormEditProduct = ({
             </label>
             <input
               name="job"
-              value={formData.job}
+              value={dataProduct.job}
               onChange={handleChange}
               placeholder="Job"
               className="w-full border border-gray-300 rounded-md shadow-sm p-2 px-3 mt-1"
             />
+            {alerts.job && (
+              <p className="text-red-500 text-sm ml-1">* {alerts.job}</p>
+            )}
           </div>
 
           <div>
@@ -98,19 +149,22 @@ const FormEditProduct = ({
             </label>
             <input
               name="price"
-              value={formData.price}
+              value={dataProduct.price}
               onChange={handleChange}
               placeholder="Harga"
               type="number"
               className="w-full border border-gray-300 rounded-md shadow-sm p-2 px-3 mt-1"
             />
+            {alerts.price && (
+              <p className="text-red-500 text-sm ml-1">{alerts.price}</p>
+            )}
           </div>
 
           <div>
             <label htmlFor="img">Gambar (url)</label>
             <input
               name="img"
-              value={formData.img}
+              value={dataProduct.img}
               onChange={handleChange}
               type="url"
               placeholder="Gambar (URL)"
@@ -126,11 +180,14 @@ const FormEditProduct = ({
           <textarea
             name="description"
             id="description"
-            value={formData.description}
+            value={dataProduct.description}
             onChange={handleChange}
             placeholder="Deskripsi Course"
             className="w-full border border-gray-300 rounded-md shadow-sm p-2 px-3 mt-1"
           />
+          {alerts.description && (
+            <p className="text-red-500 text-sm ml-1">* {alerts.description}</p>
+          )}
         </div>
 
         <div className="flex justify-end gap-2 mt-3">
@@ -144,7 +201,7 @@ const FormEditProduct = ({
 
           <button
             type="button"
-            onClick={onSave}
+            onClick={handleSubmit}
             disabled={loading}
             className="px-4 py-2 bg-green-500 text-white rounded cursor-pointer"
           >
