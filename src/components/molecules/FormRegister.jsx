@@ -71,10 +71,9 @@ const FormRegister = () => {
           placeholder=""
           value={user.name}
           onChange={(e) => setUser({ ...user, name: e.target.value })}
-          // required
         />
         {alerts.name && (
-          <p className="text-red-500 text-sm mt-1">{alerts.name}</p>
+          <p className="text-red-500 text-sm mt-1">* {alerts.name}</p>
         )}
       </div>
 
@@ -88,10 +87,9 @@ const FormRegister = () => {
           placeholder=""
           value={user.email}
           onChange={(e) => setUser({ ...user, email: e.target.value })}
-          // required
         />
         {alerts.email && (
-          <p className="text-red-500 text-sm mt-1">{alerts.email}</p>
+          <p className="text-red-500 text-sm mt-1">* {alerts.email}</p>
         )}
       </div>
 
@@ -121,11 +119,10 @@ const FormRegister = () => {
             placeholder=""
             value={user.phone}
             onChange={(e) => setUser({ ...user, phone: e.target.value })}
-            // required
           />
         </div>
         {alerts.phone && (
-          <p className="text-red-500 text-sm mt-1">{alerts.phone}</p>
+          <p className="text-red-500 text-sm mt-1">* {alerts.phone}</p>
         )}
       </div>
 
@@ -140,7 +137,6 @@ const FormRegister = () => {
             placeholder=""
             value={user.password}
             onChange={(e) => setUser({ ...user, password: e.target.value })}
-            // required
           />
           <img
             onClick={() => setShowPassword(!showPassword)}
@@ -150,7 +146,7 @@ const FormRegister = () => {
           />
         </div>
         {alerts.password && (
-          <p className="text-red-500 text-sm mt-1">{alerts.password}</p>
+          <p className="text-red-500 text-sm mt-1">* {alerts.password}</p>
         )}
       </div>
 
@@ -177,7 +173,7 @@ const FormRegister = () => {
           />
         </div>
         {alerts.confirmPassword && (
-          <p className="text-red-500 text-sm mt-1">{alerts.confirmPassword}</p>
+          <p className="text-red-500 text-sm mt-1">* {alerts.confirmPassword}</p>
         )}
       </div>
 

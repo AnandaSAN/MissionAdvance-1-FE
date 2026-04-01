@@ -71,7 +71,7 @@ const FormLogin = () => {
           }}
         />
         {alerts.email && (
-          <p className="text-red-500 text-sm mt-1">{alerts.email}</p>
+          <p className="text-red-500 text-sm mt-1">* {alerts.email}</p>
         )}
       </div>
 
@@ -98,7 +98,7 @@ const FormLogin = () => {
           />
         </div>
         {alerts.password && (
-          <p className="text-red-500 text-sm mt-1">{alerts.password}</p>
+          <p className="text-red-500 text-sm mt-1">* {alerts.password}</p>
         )}
       </div>
 

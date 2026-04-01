@@ -156,7 +156,7 @@ const FormEditProduct = ({
               className="w-full border border-gray-300 rounded-md shadow-sm p-2 px-3 mt-1"
             />
             {alerts.price && (
-              <p className="text-red-500 text-sm ml-1">{alerts.price}</p>
+              <p className="text-red-500 text-sm ml-1">* {alerts.price}</p>
             )}
           </div>
 
